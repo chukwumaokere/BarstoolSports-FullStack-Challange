@@ -27,7 +27,9 @@ export default function Header() {
 
     return (
         <nav className='flex flex-col gap-2'>
-            <Title>Welcome to the Barstool Sports Score Tracker</Title>
+            <Link href='/'>
+                <Title>Barstool Sports Score Tracker</Title>
+            </Link>
             <ul className='flex flex-row gap-4 grow'>
                 {
                     navigation.map((nav: NavLink) => {
@@ -36,7 +38,7 @@ export default function Header() {
                                 <Link href={nav.link} className={`${paths?.includes(nav.link.substring(1)) ?
                                     'after:border-b after:content-[""] after:w-full after:-translate-x-full after:border-blue-400 after:absolute after:bottom-0 after:'
                                     : ''}
-                                text-black font-semibold antialiased hover:text-blue-500`}>{nav.name}</Link>
+                                text-white font-semibold antialiased hover:text-blue-500`}>{nav.name}</Link>
                             </li>
                         );
                     })
