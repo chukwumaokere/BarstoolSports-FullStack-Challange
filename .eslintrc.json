@@ -1,3 +1,130 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "ignorePatterns": [
+    "dist",
+    "node_modules",
+    "build",
+    "package.json"
+  ],
+  "rules": {
+    "array-bracket-newline": [
+        "error",
+        {
+            "multiline": true
+        }
+    ],
+    "brace-style": [
+        "error",
+        "1tbs"
+    ],
+    "camelcase": [
+        "error",
+        {
+            "properties": "never",
+            "ignoreDestructuring": true,
+            "ignoreImports": true,
+            "ignoreGlobals": true
+        }
+    ],
+    "capitalized-comments": [
+        "error",
+        "always",
+        {
+            "ignoreConsecutiveComments": true
+        }
+    ],
+    "comma-dangle": [
+        "error",
+        "always-multiline"
+    ],
+    "comma-spacing": [
+        "error"
+    ],
+    "comma-style": [
+        "error"
+    ],
+    "curly": [
+        "error"
+    ],
+    "eqeqeq": [
+        "error",
+        "always"
+    ],
+    "indent": [
+        "error",
+        4,
+        {
+            "SwitchCase": 1
+        }
+    ],
+    "keyword-spacing": [
+        "error",
+        {
+            "before": true,
+            "after": true
+        }
+    ],
+    "key-spacing": [
+        "error",
+        {
+            "beforeColon": false,
+            "afterColon": true,
+            "mode": "strict"
+        }
+    ],
+    "max-len": [
+        "warn",
+        {
+            "code": 240
+        }
+    ],
+    "no-multi-spaces": [
+        "error"
+    ],
+    "no-trailing-spaces": [
+        "error"
+    ],
+    "no-var": [
+        "error"
+    ],
+    "object-curly-newline": [
+        "error",
+        {
+            "consistent": true
+        }
+    ],
+    "prefer-const": [
+        "error"
+    ],
+    "react/jsx-no-bind": [
+        "error",
+        {
+            "allowArrowFunctions": false
+        }
+    ],
+    "react/jsx-tag-spacing": [
+        "error",
+        {
+            "beforeSelfClosing": "always"
+        }
+    ],
+    "react/prop-types": [
+        "off"
+    ],
+    "semi": [
+        "error",
+        "always"
+    ],
+    "space-before-blocks": [
+        "error",
+        "always"
+    ],
+    "space-in-parens": [
+        "error",
+        "never"
+    ],
+    "space-infix-ops": [
+        "error"
+    ]
+  }
 }
