@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Redis } from "@upstash/redis";
-import { BoxScoreData, BoxScoreError, BoxScoreResponse, MLBData } from '@/types';
+import { BoxScoreData, BoxScoreError, BoxScoreResponse } from '@/types';
 
+// How long in seconds the cache should last before expiring
 const CACHE_TIMEOUT = 15;
 
 const redis = Redis.fromEnv();
@@ -15,12 +16,11 @@ async function saveToRedis({key, data}: {key: string, data: any}) {
 
 export async function GET(request: NextRequest, {params}: {params: {sport: string}}) {
     const { sport } = params;
-    // How long in seconds the cache should last before expiring
     let data: BoxScoreResponse = {error: null};
     const MLB_REDIS_KEY = 'MLB';
     const NBA_REDIS_KEY = 'NBA';
 
-    if (sport === 'mlb') {
+    if (sport.toLowerCase() === 'mlb') {
         const mlbGameData = await redis.hgetall(MLB_REDIS_KEY);
 
         if (mlbGameData) {
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest, {params}: {params: {sport: strin
         }
     }
 
-    if (sport === 'nba') {
+    if (sport.toLowerCase() === 'nba') {
         const nbaGameData = await redis.hgetall(NBA_REDIS_KEY);
 
         if (nbaGameData) {

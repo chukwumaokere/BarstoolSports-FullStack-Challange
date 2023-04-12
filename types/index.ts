@@ -71,20 +71,6 @@ export enum Abbreviation {
     Okc = "OKC",
 }
 
-interface Team {
-    team_id: string;
-    abbreviation: Abbreviation;
-    active: boolean;
-    first_name: string;
-    last_name: string;
-    conference: string;
-    division: string;
-    site_name: string;
-    city: string;
-    state: string;
-    full_name: string;
-}
-
 interface EventInformation {
     temperature: number;
     site: Site;
@@ -196,7 +182,7 @@ interface Pitcher {
     team_abbreviation: Abbreviation;
 }
 
-interface Team {
+export interface Team {
     team_id: string;
     abbreviation: Abbreviation;
     active: boolean;
