@@ -16,4 +16,4 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-[http://localhost:3000/api/boxscore](http://localhost:3000/api/boxscore) is an endpoint that uses [Route Handlers](https://beta.nextjs.org/docs/routing/route-handlers). This endpoint can be edited in `app/api/boxscore/route.ts`.
+[http://localhost:3000/api/boxscore/[sport]](http://localhost:3000/api/boxscore/) is an endpoint that uses [Route Handlers](https://beta.nextjs.org/docs/routing/route-handlers). This endpoint can be edited in `app/api/boxscore/[sport]/route.ts`.
