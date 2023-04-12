@@ -1,11 +1,9 @@
-export interface BoxScoreData {
-    data: MLBData | NBAData;
-};
-
+export type BoxScoreData = MLBData | NBAData;
 export interface BoxScoreError {
-    error: string;
-    data: null;
+    error: string | null;
 }
+
+export type BoxScoreResponse = BoxScoreData | BoxScoreError;
 
 export interface NBAData {
     league: string;

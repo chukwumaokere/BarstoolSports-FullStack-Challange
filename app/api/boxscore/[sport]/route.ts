@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Redis } from "@upstash/redis";
-import { BoxScoreData } from '@/types';
+import { BoxScoreData, BoxScoreError, BoxScoreResponse, MLBData } from '@/types';
 
 const CACHE_TIMEOUT = 15;
 
 const redis = Redis.fromEnv();
 
-async function saveToRedis({key, data}: {key: string, data: BoxScoreData}) {
+async function saveToRedis({key, data}: {key: string, data: any}) {
     const tx = redis.multi();
-    tx.hset(key, {data: data});
+    tx.hset(key, data);
     tx.expire(key, CACHE_TIMEOUT);
     await tx.exec();
 }
@@ -16,25 +16,29 @@ async function saveToRedis({key, data}: {key: string, data: BoxScoreData}) {
 export async function GET(request: NextRequest, {params}: {params: {sport: string}}) {
     const { sport } = params;
     // How long in seconds the cache should last before expiring
-    const data = new Map([]);
+    let data: BoxScoreResponse = {error: null};
     const MLB_REDIS_KEY = 'MLB';
     const NBA_REDIS_KEY = 'NBA';
-    const DATA_MAP_KEY = 'data';
 
     if (sport === 'mlb') {
         const mlbGameData = await redis.hgetall(MLB_REDIS_KEY);
 
         if (mlbGameData) {
             console.log('cache hit mlb');
-            data.set(DATA_MAP_KEY, mlbGameData.data);
+            data = (mlbGameData as unknown) as BoxScoreData;
         } else {
             console.log('cache miss mlb, refetching');
-            const key = MLB_REDIS_KEY;
-            // We don't cache the response here, since we're using Redis to cache the data. This will only ever be called if the data is not in Redis, so we want fresh data.
-            const mlbGameDataRequest = await fetch(process.env.MLB_DATA_ENDPOINT as string, {cache: 'no-store'});
-            const mlbGameData = await mlbGameDataRequest.json();
-            await saveToRedis({key, data: mlbGameData});
-            data.set(DATA_MAP_KEY, mlbGameData);
+            try {
+                const key = MLB_REDIS_KEY;
+                // We don't cache the response here, since we're using Redis to cache the data. This will only ever be called if the data is not in Redis, so we want fresh data.
+                const mlbGameDataRequest = await fetch(process.env.MLB_DATA_ENDPOINT as string, {cache: 'no-store'});
+                const mlbGameData: BoxScoreData = await mlbGameDataRequest.json();
+                await saveToRedis({key, data: mlbGameData});
+                data = mlbGameData;
+            } catch (e) {
+                console.error(e);
+                data = {error: 'There was an error fetching MLB data.', data: null} as BoxScoreError;
+            }
         }
     }
 
@@ -43,19 +47,22 @@ export async function GET(request: NextRequest, {params}: {params: {sport: strin
 
         if (nbaGameData) {
             console.log('cache hit nba');
-            data.set(DATA_MAP_KEY, nbaGameData.data);
+            data = (nbaGameData as unknown) as BoxScoreData;
         } else {
             console.log('cache miss nba, refetching');
-            const key = NBA_REDIS_KEY;
-            // We don't cache the response here, since we're using Redis to cache the data. This will only ever be called if the data is not in Redis, so we want fresh data.
-            const nbaGameDataRequest = await fetch(process.env.NBA_DATA_ENDPOINT as string, {cache: 'no-store'});
-            const nbaGameData = await nbaGameDataRequest.json();
-            await saveToRedis({key, data: nbaGameData});
-            data.set(DATA_MAP_KEY, nbaGameData);
+            try {
+                const key = NBA_REDIS_KEY;
+                // We don't cache the response here, since we're using Redis to cache the data. This will only ever be called if the data is not in Redis, so we want fresh data.
+                const nbaGameDataRequest = await fetch(process.env.NBA_DATA_ENDPOINT as string, {cache: 'no-store'});
+                const nbaGameData: BoxScoreData = await nbaGameDataRequest.json();
+                await saveToRedis({key, data: nbaGameData});
+                data = nbaGameData;
+            } catch (e) {
+                console.error(e);
+                data = {error: 'There was an error fetching NBA data.', data: null} as BoxScoreError;
+            }
         }
     }
 
-    const serializedData = (Object.fromEntries(data)) as BoxScoreData;
-
-    return NextResponse.json(serializedData);
+    return NextResponse.json(data);
 }
